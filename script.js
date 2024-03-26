@@ -158,7 +158,7 @@ function game() {
   }
 
   function createOrder(players) {
-    let first = players[(() => Math.floor(Math.random() * 2))()];
+    let first = players[Math.floor(Math.random() * 2)];
     let second = players.find((player) => player != first);
     return [first, second];
   }
