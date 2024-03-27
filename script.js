@@ -1,8 +1,8 @@
 function game() {
-  let squares = document.querySelectorAll('.square')
+  let squares = document.querySelectorAll(".square");
 
   function removeResultMessage() {
-    const resultMessage = document.querySelector('.result');
+    const resultMessage = document.querySelector(".result");
     if (resultMessage) {
       resultMessage.remove();
     }
@@ -11,13 +11,10 @@ function game() {
   function removeSquareListeners() {
     squares.forEach((square) => {
       const newSquare = square.cloneNode(true);
-      newSquare.textContent = ""
+      newSquare.textContent = "";
       square.parentNode.replaceChild(newSquare, square);
     });
   }
-
-
-  
 
   async function playGame() {
     const gameboard = (function createGameboard() {
@@ -29,43 +26,44 @@ function game() {
         };
         return { row, column, piece, updatePiece };
       }
-  
+
       // Gameboard made from first row going up
       let gameboard = [
         [createCell(0, 0), createCell(1, 0), createCell(2, 0)],
         [createCell(0, 1), createCell(1, 1), createCell(2, 1)],
         [createCell(0, 2), createCell(1, 2), createCell(2, 2)],
       ];
-  
+
       const printBoard = () => {
         let printedBoard = "";
         for (let index = 2; index >= 0; index--) {
           const row = gameboard[index];
-          const rows = document.querySelectorAll('.row')
-          const rowSquares = rows[2-index].querySelectorAll('.square')
+          const rows = document.querySelectorAll(".row");
+          const rowSquares = rows[2 - index].querySelectorAll(".square");
           let string = "";
           for (let index = 0; index <= 2; index++) {
             string += row[index].piece;
             let squarePiece = row[index].piece;
-            rowSquares[index].textContent = squarePiece === "." ?  " " : squarePiece;
+            rowSquares[index].textContent =
+              squarePiece === "." ? " " : squarePiece;
           }
           printedBoard += string + "\n";
         }
         console.log(printedBoard);
       };
-  
+
       let placePiece = ({ row: row, column: column, piece: piece }) => {
         gameboard[row][column] = gameboard[row][column].updatePiece(piece);
         printBoard();
       };
-  
+
       let availableSpaces = () => {
         const cells = gameboard.flat();
         return cells.filter((cell) => cell.piece === ".");
       };
-  
+
       return { gameboard, placePiece, availableSpaces };
-    }());
+    })();
     console.log("Welcome to Tic Tac Toe");
     const players = createPlayers();
     const order = createOrder(players);
@@ -81,19 +79,19 @@ function game() {
     let currentTurn = 1;
 
     while (currentTurn < 10 && isWon(gameboard.gameboard) === false) {
-      let player = order[0]
-      order.push(player)
+      let player = order[0];
+      order.push(player);
       await player.playTurn(gameboard);
       if (isWon(gameboard.gameboard) === true) {
-        let body = document.querySelector('body')
-        let div = document.createElement('div')
-        div.className = 'result'
-        div.textContent = `${player.name} won`
-        body.appendChild(div)
+        let body = document.querySelector("body");
+        let div = document.createElement("div");
+        div.className = "result";
+        div.textContent = `${player.name} won`;
+        body.appendChild(div);
         console.log(`${player.name} won`);
       }
-        currentTurn++;
-        order.shift();
+      currentTurn++;
+      order.shift();
     }
     isWon(gameboard.gameboard) ? void 0 : console.log("Stalemate!");
   }
@@ -143,32 +141,35 @@ function game() {
 
   function createPlayer(name, symbol, isComputer) {
     const getUserInput = (availableSpaces) => {
-      
-      return new Promise((resolve, reject) =>{
+      return new Promise((resolve, reject) => {
         squares.forEach((square) => {
-          square.addEventListener('click', () => {
-              const row = parseInt(square.getAttribute("row"));
-              const column = parseInt(square.getAttribute("column"));
-              const piece = symbol;
-              const selectedCell = { row, column, piece };
+          square.addEventListener("click", () => {
+            const row = parseInt(square.getAttribute("row"));
+            const column = parseInt(square.getAttribute("column"));
+            const piece = symbol;
+            const selectedCell = { row, column, piece };
 
-              if (!availableSpaces.some(cell => cell.row === row && cell.column === column)) {
-                  alert("Invalid placement.");
-                  reject();
-              } else {
-                  resolve(selectedCell);
-              }
+            if (
+              !availableSpaces.some(
+                (cell) => cell.row === row && cell.column === column
+              )
+            ) {
+              alert("Invalid placement.");
+              reject();
+            } else {
+              resolve(selectedCell);
+            }
           });
         });
       });
-    }
+    };
     const playTurn = async (gameboard) => {
       const randomCell = (array) => {
         const cell = array[Math.floor(Math.random() * array.length)];
         const row = cell.row;
         const column = cell.column;
         const piece = symbol;
-    return { row, column, piece };
+        return { row, column, piece };
       };
       const availableSpaces = gameboard.availableSpaces();
       if (isComputer) {
@@ -177,9 +178,9 @@ function game() {
         try {
           const selectedCell = await getUserInput(availableSpaces);
           gameboard.placePiece(selectedCell);
-      } catch (error) {
+        } catch (error) {
           console.error(error);
-      }
+        }
       }
     };
     return { name, symbol, isComputer, playTurn };
@@ -194,9 +195,8 @@ function game() {
 }
 
 let button = document.querySelector("button");
-button.addEventListener("click", () =>{
+button.addEventListener("click", () => {
   game().removeResultMessage();
   game().removeSquareListeners();
-  game().playGame()
+  game().playGame();
 });
-
