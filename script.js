@@ -30,15 +30,8 @@ function game() {
           string += row[index].piece;
           rowSquares[index].textContent = row[index].piece;
         }
-        // row.forEach((cell) => {
-        //   string += cell.piece;
-        // });
         printedBoard += string + "\n";
       }
-      // for (var i = 0; i < squares.length; i++) {
-      //   squares[i].textContent = "X"
-      // }
-
       console.log(printedBoard);
     };
 
@@ -55,7 +48,7 @@ function game() {
     return { gameboard, placePiece, availableSpaces };
   }
 
-  function playGame() {
+  async function playGame() {
     let gameboard = createGameboard();
     console.log("Welcome to Tic Tac Toe");
     const players = createPlayers();
@@ -74,7 +67,7 @@ function game() {
     while (currentTurn < 10 && isWon(gameboard.gameboard) === false) {
       let player = order[0]
       order.push(player)
-      player.playTurn(gameboard);
+      await player.playTurn(gameboard);
       if (isWon(gameboard.gameboard) === true) {
         console.log(`${player.name} won`);
       }
@@ -129,30 +122,26 @@ function game() {
 
   function createPlayer(name, symbol, isComputer) {
     const getUserInput = (availableSpaces) => {
-      //todo: change this when ui implemented
+      
+      return new Promise((resolve, reject) =>{
+        squares.forEach((square) => {
+          square.addEventListener('click', () => {
+              const row = parseInt(square.getAttribute("row"));
+              const column = parseInt(square.getAttribute("column"));
+              const piece = symbol;
+              const selectedCell = { row, column, piece };
 
-      const placementValid = () => {
-        return availableSpaces.some((availableCell) => {
-          let x =
-            selectedCell.row == availableCell.row &&
-            selectedCell.column == availableCell.column;
-          return x;
+              if (!availableSpaces.some(cell => cell.row === row && cell.column === column)) {
+                  alert("Invalid placement.");
+                  reject();
+              } else {
+                  resolve(selectedCell);
+              }
+          });
         });
-      };
-      do {
-        var row = parseInt(prompt("Select Row"));
-        var column = parseInt(prompt("Select Column"));
-        let piece = symbol;
-        var selectedCell = { row, column, piece };
-        var placementIsValid = placementValid(selectedCell);
-        if (placementIsValid === false) {
-          alert("Invalid placement.");
-        }
-      } while (placementIsValid === false);
-
-      return selectedCell;
-    };
-    const playTurn = (gameboard) => {
+      });
+    }
+    const playTurn = async (gameboard) => {
       const randomCell = (array) => {
         const cell = array[Math.floor(Math.random() * array.length)];
         const row = cell.row;
@@ -161,10 +150,15 @@ function game() {
     return { row, column, piece };
       };
       const availableSpaces = gameboard.availableSpaces();
-      if (isComputer === true) {
+      if (isComputer) {
         gameboard.placePiece(randomCell(availableSpaces));
       } else {
-        gameboard.placePiece(getUserInput(availableSpaces));
+        try {
+          const selectedCell = await getUserInput(availableSpaces);
+          gameboard.placePiece(selectedCell);
+      } catch (error) {
+          console.error(error);
+      }
       }
     };
     return { name, symbol, isComputer, playTurn };
@@ -180,3 +174,4 @@ function game() {
 
 let button = document.querySelector("button");
 button.addEventListener("click", () => game().playGame());
+
