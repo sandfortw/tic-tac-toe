@@ -1,7 +1,22 @@
-let squares = document.querySelectorAll('.square')
-
-
 function game() {
+  let squares = document.querySelectorAll('.square')
+
+  function removeResultMessage() {
+    const resultMessage = document.querySelector('.result');
+    if (resultMessage) {
+      resultMessage.remove();
+    }
+  }
+
+  function removeSquareListeners() {
+    squares.forEach((square) => {
+      const newSquare = square.cloneNode(true);
+      newSquare.textContent = ""
+      square.parentNode.replaceChild(newSquare, square);
+    });
+  }
+
+
   function createGameboard() {
     function createCell(column, row) {
       let piece = ".";
@@ -85,7 +100,7 @@ function game() {
 
   function createPlayers() {
     return [
-      createPlayer("human", "x", false),
+      createPlayer(prompt("What is your name?"), "x", false),
       createPlayer("computer", "o", true),
     ];
   }
@@ -175,9 +190,13 @@ function game() {
     let second = players.find((player) => player != first);
     return [first, second];
   }
-  return { playGame };
+  return { playGame, removeResultMessage, removeSquareListeners };
 }
 
 let button = document.querySelector("button");
-button.addEventListener("click", () => game().playGame());
+button.addEventListener("click", () =>{
+  game().removeResultMessage();
+  game().removeSquareListeners();
+  game().playGame()
+});
 
