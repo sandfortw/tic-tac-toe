@@ -1,3 +1,6 @@
+let squares = document.querySelectorAll('.square')
+
+
 function game() {
   function createGameboard() {
     function createCell(column, row) {
@@ -20,12 +23,22 @@ function game() {
       let printedBoard = "";
       for (let index = 2; index >= 0; index--) {
         const row = gameboard[index];
+        const rows = document.querySelectorAll('.row')
+        const rowSquares = rows[2-index].querySelectorAll('.square')
         let string = "";
-        row.forEach((cell) => {
-          string += cell.piece;
-        });
+        for (let index = 0; index <= 2; index++) {
+          string += row[index].piece;
+          rowSquares[index].textContent = row[index].piece;
+        }
+        // row.forEach((cell) => {
+        //   string += cell.piece;
+        // });
         printedBoard += string + "\n";
       }
+      // for (var i = 0; i < squares.length; i++) {
+      //   squares[i].textContent = "X"
+      // }
+
       console.log(printedBoard);
     };
 
