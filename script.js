@@ -28,7 +28,8 @@ function game() {
         let string = "";
         for (let index = 0; index <= 2; index++) {
           string += row[index].piece;
-          rowSquares[index].textContent = row[index].piece;
+          let squarePiece = row[index].piece;
+          rowSquares[index].textContent = squarePiece === "." ?  " " : squarePiece;
         }
         printedBoard += string + "\n";
       }
@@ -69,6 +70,11 @@ function game() {
       order.push(player)
       await player.playTurn(gameboard);
       if (isWon(gameboard.gameboard) === true) {
+        let body = document.querySelector('body')
+        let div = document.createElement('div')
+        div.className = 'result'
+        div.textContent = `${player.name} won`
+        body.appendChild(div)
         console.log(`${player.name} won`);
       }
         currentTurn++;
