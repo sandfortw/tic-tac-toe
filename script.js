@@ -17,55 +17,55 @@ function game() {
   }
 
 
-  function createGameboard() {
-    function createCell(column, row) {
-      let piece = ".";
-      const updatePiece = (newSymbol) => {
-        piece = newSymbol;
-        return { row, column, piece, updatePiece };
-      };
-      return { row, column, piece, updatePiece };
-    }
-
-    // Gameboard made from first row going up
-    let gameboard = [
-      [createCell(0, 0), createCell(1, 0), createCell(2, 0)],
-      [createCell(0, 1), createCell(1, 1), createCell(2, 1)],
-      [createCell(0, 2), createCell(1, 2), createCell(2, 2)],
-    ];
-
-    const printBoard = () => {
-      let printedBoard = "";
-      for (let index = 2; index >= 0; index--) {
-        const row = gameboard[index];
-        const rows = document.querySelectorAll('.row')
-        const rowSquares = rows[2-index].querySelectorAll('.square')
-        let string = "";
-        for (let index = 0; index <= 2; index++) {
-          string += row[index].piece;
-          let squarePiece = row[index].piece;
-          rowSquares[index].textContent = squarePiece === "." ?  " " : squarePiece;
-        }
-        printedBoard += string + "\n";
-      }
-      console.log(printedBoard);
-    };
-
-    let placePiece = ({ row: row, column: column, piece: piece }) => {
-      gameboard[row][column] = gameboard[row][column].updatePiece(piece);
-      printBoard();
-    };
-
-    let availableSpaces = () => {
-      const cells = gameboard.flat();
-      return cells.filter((cell) => cell.piece === ".");
-    };
-
-    return { gameboard, placePiece, availableSpaces };
-  }
+  
 
   async function playGame() {
-    let gameboard = createGameboard();
+    const gameboard = (function createGameboard() {
+      function createCell(column, row) {
+        let piece = ".";
+        const updatePiece = (newSymbol) => {
+          piece = newSymbol;
+          return { row, column, piece, updatePiece };
+        };
+        return { row, column, piece, updatePiece };
+      }
+  
+      // Gameboard made from first row going up
+      let gameboard = [
+        [createCell(0, 0), createCell(1, 0), createCell(2, 0)],
+        [createCell(0, 1), createCell(1, 1), createCell(2, 1)],
+        [createCell(0, 2), createCell(1, 2), createCell(2, 2)],
+      ];
+  
+      const printBoard = () => {
+        let printedBoard = "";
+        for (let index = 2; index >= 0; index--) {
+          const row = gameboard[index];
+          const rows = document.querySelectorAll('.row')
+          const rowSquares = rows[2-index].querySelectorAll('.square')
+          let string = "";
+          for (let index = 0; index <= 2; index++) {
+            string += row[index].piece;
+            let squarePiece = row[index].piece;
+            rowSquares[index].textContent = squarePiece === "." ?  " " : squarePiece;
+          }
+          printedBoard += string + "\n";
+        }
+        console.log(printedBoard);
+      };
+  
+      let placePiece = ({ row: row, column: column, piece: piece }) => {
+        gameboard[row][column] = gameboard[row][column].updatePiece(piece);
+        printBoard();
+      };
+  
+      let availableSpaces = () => {
+        const cells = gameboard.flat();
+        return cells.filter((cell) => cell.piece === ".");
+      };
+  
+      return { gameboard, placePiece, availableSpaces };
+    }());
     console.log("Welcome to Tic Tac Toe");
     const players = createPlayers();
     const order = createOrder(players);
