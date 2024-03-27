@@ -1,6 +1,6 @@
 function game() {
   function createGameboard() {
-    function createCell(row, column) {
+    function createCell(column, row) {
       let piece = ".";
       const updatePiece = (newSymbol) => {
         piece = newSymbol;
@@ -127,8 +127,8 @@ function game() {
         });
       };
       do {
-        var row = prompt("Select Row");
-        var column = prompt("Select Column");
+        var row = parseInt(prompt("Select Row"));
+        var column = parseInt(prompt("Select Column"));
         let piece = symbol;
         var selectedCell = { row, column, piece };
         var placementIsValid = placementValid(selectedCell);
@@ -141,11 +141,11 @@ function game() {
     };
     const playTurn = (gameboard) => {
       const randomCell = (array) => {
-        const cell = array[Math.floor(Math.random() * (array.length - 1))];
+        const cell = array[Math.floor(Math.random() * array.length)];
         const row = cell.row;
         const column = cell.column;
         const piece = symbol;
-        return { row, column, piece };
+    return { row, column, piece };
       };
       const availableSpaces = gameboard.availableSpaces();
       if (isComputer === true) {
